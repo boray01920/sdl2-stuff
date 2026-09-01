@@ -2,12 +2,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "shaderClass.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
 #include "Texture.h"
+#include "Camera.h"
+
+#define PI 3.1415926535897
+
+const unsigned int width = 800;
+const unsigned int height = 800;
 
 
 int main() {
@@ -20,7 +29,7 @@ int main() {
 	
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Tell GLFW that we are using the CORE profile, we only have the modern functions
 
-	GLFWwindow* window = glfwCreateWindow(800, 800, "OpenglTest", NULL, NULL); // A GLFW window object of 800x600px, named "OpenglTest". Rest is unimportant
+	GLFWwindow* window = glfwCreateWindow(width, height, "OpenglTest", NULL, NULL); // A GLFW window object of 800x600px, named "OpenglTest". Rest is unimportant
 	// safety check
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -28,24 +37,31 @@ int main() {
 		return -1;
 	}
 
+	
+
 	GLfloat vertices[] = {
-	//  COORDINATES                  COLORS
-		-0.5f, -0.5f, 0.0f,		 1.0f, 0.0f, 0.0f,	0.0f, 0.0f,	// bottom left  - red
-		 0.5f, -0.5f, 0.0f,		 0.0f, 1.0f, 0.0f,	1.0f, 0.0f,	// bottom right - green
-		 0.5f,  0.5f, 0.0f,		 0.0f, 0.0f, 1.0f,	1.0f, 1.0f,	// top right    - blue
-		-0.5f,  0.5f, 0.0f,		 1.0f, 1.0f, 0.0f,	0.0f, 1.0f  // top left     - yellow
+	//  COORDINATES                  COLORS              TexCoord
+	   -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,		0.0f, 0.0f,
+	   -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,		5.0f, 0.0f,
+		0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,		0.0f, 0.0f,
+		0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,		5.0f, 0.0f,
+		0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,		2.5f, 5.0f
 	};
 
 	GLuint indices[] = {
-		0,1,2,
-		2,3,0
+		0, 1, 2,
+		0, 2, 3,
+		0, 1, 4,
+		1, 2, 4,
+		2, 3, 4,
+		3, 0, 4
 	};
 
 	glfwMakeContextCurrent(window); // introduce the window to the current context
 
 	gladLoadGL(); // load GLAD so it can configue OpenGL
 
-	glViewport(0, 0, 800, 800); // In here it goes from x:0, y:0 to x:800, y:800
+	glViewport(0, 0, width, height); // In here it goes from x:0, y:0 to x:800, y:800
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -62,22 +78,28 @@ int main() {
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
-
 
 	Texture animals("animals.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	animals.texUnit(shaderProgram, "tex0", 0);
 
 
+	glEnable(GL_DEPTH_TEST);
+
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+
 	while (!glfwWindowShouldClose(window)) {
 
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		shaderProgram.Activate();
-		glUniform1f(uniID, 0.5f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		shaderProgram.Activate();  // activate the shader firs
+
+		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+
 		animals.Bind();
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
