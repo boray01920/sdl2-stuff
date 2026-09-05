@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #include "shaderClass.h"
 
@@ -16,6 +18,8 @@ class Camera {
 		glm::vec3 Position;
 		glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f); //direction of the camera
 		glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		bool firstClick = true; //to make sure that every first click is force positioned to the center of the window
 
 		int width, height;
 
