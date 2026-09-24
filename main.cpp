@@ -59,7 +59,7 @@ int main() {
 	};
 	Mesh light(lightVerts, lightInd, lightTex);
 
-	glm::vec3 lightPos = glm::vec3(1.0f, 0.5f, 1.0f); // near the cube, offset so it's clearly visible
+	glm::vec3 lightPos = glm::vec3(1.0f, 0.5f, 1.0f); 
 	light.model = glm::translate(glm::mat4(1.0f), lightPos);
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
