@@ -40,6 +40,8 @@ int main() {
 		Texture("grassSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
 	};
 
+	//Shaders
+
 	Shader shaderProgram("default.vert", "default.frag");
 	Shader lightShader("light.vert", "light.frag");
 
@@ -69,12 +71,6 @@ int main() {
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-
-
-
-
-
 
 	glEnable(GL_DEPTH_TEST);
 
