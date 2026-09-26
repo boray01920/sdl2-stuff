@@ -4,10 +4,11 @@ Texture::Texture(const char* image, const char* texType, GLuint slot) {
 	type = texType;
 
 	int widthImg, heightImg, numColCh;
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 4);
 	if (!bytes) {
-		std::cout << "### ERROR: Failed to load the texture ###" << std::endl;
+		std::cout << "### ERROR: Failed to load the texture ###" << image <<std::endl;
+		return;
 	}
 	else {
 		std::cout << "Texture succesfully loaded!" << std::endl;
