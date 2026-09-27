@@ -86,7 +86,7 @@ void Model::traverseNode(unsigned int nextNode, glm::mat4 matrix) {
 	rot = glm::mat4_cast(rotation);
 	sca = glm::scale(sca, scale);
 
-	glm::mat4 matNextNode = matrix * matNode * trans * sca;
+	glm::mat4 matNextNode = matrix * matNode * trans * rot * sca;
 
 	if (node.find("mesh") != node.end()) {
 		translationsMeshes.push_back(translation);

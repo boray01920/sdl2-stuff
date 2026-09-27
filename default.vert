@@ -19,11 +19,13 @@ uniform mat4 scale;
 
 void main()
 {
-	crntPos = vec3(model * translation * rotation * scale * vec4(aPos, 1.0f)); 
+	crntPos = vec3(model * translation * -rotation * scale * vec4(aPos, 1.0f)); 
 	//i dont remember why its -rotation, i think it was a bug with OpenGL !!CORRECTION: IT WAS A BUG!
 	//wait now it changes nothing... or does it?
 	Normal = aNormal;
 	color = aColor;
-	texCoord = aTex;
+	texCoord = mat2(1.0, 0.0, 0.0, -1.0) * aTex;
+
+
 	gl_Position = camMatrix * vec4(crntPos, 1.0);
 }
